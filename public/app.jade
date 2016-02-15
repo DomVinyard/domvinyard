@@ -1,0 +1,166 @@
+
+
+
+
+script(src="/socket.io/socket.io.js")
+meta(name="viewport" content="width=device-width, initial-scale=1")
+body
+  header
+    h1.top NO BILLIONAIRES
+    h1.bottom BY 2100
+  article
+    section
+      h3 Why no billionaires?
+      p 
+        a Capitalism is great. Unlimited capitalism is just negligent. The hoarding of extreme wealth 
+        a.highlight benefits such a tiny number of people and harms such a large number of people
+        a  that it simply can't be justified as part of a healthy global society.
+    section  
+      h3 Why 2100?
+      p 
+        a It's largly beyond living memory, at the very least you're going to be pretty old by then. 
+        a.highlight Nobody alive now will be particularly affected. 
+        a We can collectively screw over the wannabe billionaires of the future by making their world better for them.
+    section  
+      h3 In which country?
+      p 
+       a.highlight All of them. 
+       a This will only work as a unilateral global movement.
+    section  
+      h3 But Bill Gates!
+      p 
+       a If every billionaire (and future billionaire) was like Bill Gates, this website wouldn't exist. 
+       a.highlight We're lucky to have him.
+    section
+      h3 It doesn't go far enough!
+      p 
+        a No, of course it doesn't. Once the world has welcomed the concept of a personal wealth limit in principle, the future people can decide whether the limit should be a billion or a few million. Or considerably less; it's their battle, we're just setting them up to have a fighting chance. 
+        a.highlight This plan is designed to be conservative enough to succeed.
+    section
+      h3 What can I do?
+      p 
+        a Share this link. 
+        a If you are able to translate this text into your language and 
+        a.link(href="mailto:mail@nobillionair.es") send it to me
+        a , I'll happily upload it. Also,
+        a.highlight  click the button below. 
+  nav  
+    button Yes, this seems sensible
+    .info
+      a (This button has been clicked 
+      a#clicks #{locals.clicks}
+      a  times)
+
+
+
+
+script
+  :coffee-script
+    socket = io()
+    button = document.getElementsByTagName('button')[0]
+    nav = document.getElementsByTagName('nav')[0]
+    body = document.getElementsByTagName('body')[0]
+    click_count = document.getElementById("clicks")
+    sendSensible = ->
+      button.disabled = true
+      setTimeout (-> button.disabled = false), 2000
+      request = new XMLHttpRequest();
+      request.open 'GET', 'http://freegeoip.net/json/', yes
+      click_count.text = parseInt(click_count.text, 10) + 1
+      request.onload = ->
+        if request.status >= 200 and request.status < 400
+          data = JSON.parse request.responseText
+          socket.emit 'sensible', data.country_code
+      request.onerror = -> alert 'error'
+      request.send()
+    receiveSensible = (sensible) ->
+      return if not sensible
+      flag = document.createElement "img"
+      flag.setAttribute "src", "flags/#{sensible.code}.png"
+      flag.setAttribute "height", "48"
+      flag.setAttribute "width", "48"
+      percent = Math.floor(Math.random() * 50) + 1
+      side = Math.floor(Math.random() * 2)
+      speed = (Math.random() * 2) + 1
+      flag.style.animationDuration = "#{speed}s"
+      flag.style[if side then 'left' else 'right'] = "#{percent}%"
+      body.appendChild flag
+      setTimeout (-> flag.parentNode.removeChild flag), speed * 1000
+      click_count.text = sensible.clicks
+    button.addEventListener "click", sendSensible
+    socket.on 'sensible', receiveSensible
+
+
+
+
+style
+  :stylus
+    highlight = rgb(255, 201, 67);
+    @keyframes fade
+      from
+        bottom 0
+        opacity 0.75
+      to
+        bottom 66%
+        opacity 0
+    body, button
+      font-family "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, sans-serif; 
+    body
+      margin auto
+      width 500px
+      font-weight: 300;
+      font-size 1.2em
+      padding 16px
+      img
+        position fixed
+        bottom 0
+        animation-name fade
+        animation-fill-mode: forwards
+        pointer-events none
+      header
+        margin 64px 0
+        text-align center
+        h1
+          font-size 55px
+          margin-bottom 0
+          line-height 0.8em
+        .bottom
+          margin-top 0
+          color highlight
+          font-size: 2.5em
+      article
+        margin-top 96px
+        section
+          font-size 1.2em
+          margin-top 48px
+          h3
+            margin-bottom 4
+            text-transform uppercase
+            color highlight
+          p
+            margin-top 0
+            color #555
+            i
+              color #000
+            .highlight
+              font-weight bold
+            .link
+              color #acacac
+              font-weight bold
+      nav    
+        margin 4em 0
+        text-align center
+        button
+          background highlight
+          font-size 1.9em
+          font-weight bold
+          padding 0.5em 1em
+          border-radius 16px
+          &:disabled
+            opacity 0.5
+        .info
+          margin 4px auto
+          font-size 0.9em
+          color #acacac
+          width 380px
+          

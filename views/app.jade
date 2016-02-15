@@ -1,0 +1,116 @@
+
+
+body
+
+  header
+    h1 NO BILLIONAIRES
+    h2 BY 2100
+
+  article
+  
+    section
+      h3 Why no billionaires?
+      p Capitalism is great. Unlimited capitalism is just negligent. Extreme wealth hoarding is bad for everybody involved in the global economy. Except the billionaire, don't count on his vote.
+    
+    section  
+      h3 Why 2100?
+      p It's largly beyond living memory, at the very least you're going to be pretty old by then. We can really screw over the wannabe billionaires of the future by fixing their world for them.
+    
+    section  
+      h3 In which country?
+      p All of them. This can only work as a global movement.
+    
+    section  
+      h3 But Bill Gates!
+      p If every billionaire (and future billionaire) was like Bill Gates, this website wouldn't exist.
+    
+    section  
+      h3 It doesn't go far enough!
+      p 
+        a No, of course it doesn't. We get the world working towards accepting the 
+        i concept
+        a  of a cap on personal wealth, then the future people can decide whether the limit should be a billion or a few million.
+    
+    section  
+      h3 What can I do?
+      p 
+        a Click the button below. Also, if you are able to translate this text into your language and 
+        a(href="mailto:mail@nobillionair.es") send it to me,
+        a  I'll happily upload it.
+
+  nav  
+    button This seems sensible
+    .info (This will ask you for your country)
+    
+
+
+script
+  :coffee-script
+    button = document.getElementsByTagName('button')[0]
+    nav = document.getElementsByTagName('nav')[0]
+    
+    GetLocation = (location) ->
+      console.log location
+      lat = location.coords.latitude
+      long = location.coords.longitude
+    
+    sensible = ->
+      #nav.parentNode.removeChild nav
+      request = new XMLHttpRequest();
+      request.open 'GET', 'http://freegeoip.net/json/', yes
+      request.onload = ->
+        if request.status >= 200 and request.status < 400
+          data = JSON.parse request.responseText
+          console.log data.country_code
+          
+      request.onerror = -> alert 'error'
+      request.send()
+      
+    button.addEventListener "click", sensible
+    
+
+    
+style
+  :stylus
+    body
+      margin auto
+      max-width 500px
+      font-family "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, sans-serif; 
+      font-weight: 300;
+      font-size 1.2em
+    
+      header
+        font-size 1.45em
+        margin-top 64px
+        text-align center
+          
+        h1
+          margin-bottom 0
+          line-height 0.8em
+        
+        h2
+          margin-top 0
+          color #acacac
+          
+      section
+        font-size 1.2em
+        h3
+          margin-bottom 0
+        p
+          margin-top 0
+          text-align justify
+          a
+            color #555
+          i
+            color #000
+        
+      nav    
+        margin 3em 0
+        text-align center
+        button
+          font-size 2em
+          padding 0.5em
+          border-radius 16px
+        .info
+          margin-top 4px
+          font-size 0.8em
