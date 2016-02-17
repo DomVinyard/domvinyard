@@ -26,7 +26,7 @@ $ ->
     lastFrame = frame
     $header_img.attr 'src': "/resources/dom/#{Math.ceil frame}.jpg"
 
-  setInterval setFrame, 20
+  setInterval setFrame, 16
 
   demo =
     start: (done)  ->
