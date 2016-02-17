@@ -29,7 +29,7 @@ $ ->
   setInterval setFrame, 32
 
   $(window).on 'touchmove', (e) ->
-      e.preventDefault()
+      # e.preventDefault()
       setFrame()
 
   demo =
