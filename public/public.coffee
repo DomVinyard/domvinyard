@@ -28,6 +28,10 @@ $ ->
 
   setInterval setFrame, 32
 
+  $(window).on 'touchmove', (e) ->
+      e.preventDefault()
+      setFrame()
+
   demo =
     start: (done)  ->
       disableScroll()
@@ -122,7 +126,7 @@ $ ->
       $('footer img').each (i) ->
         $(@).delay(i * rate).animate {opacity: 1, margin: '0 -4px'}, 600
       $('pre.footer').delay(1200).slideUp 800, ->
-        setTimeout done, section_timeout_delay + 600
+        setTimeout done, section_timeout_delay + 200
 
     finished: ->
       $("html, body").delay(200).animate { scrollTop: 0 }, 1000, ->
