@@ -28,14 +28,6 @@ $ ->
 
   setInterval setFrame, 20
 
-  # $(window).scroll ->
-  #   return if !$('header').is(':visible')
-  #   return if $('header').hasClass('repress_scroll')
-  #   scroll_height = $(window).scrollTop()
-  #   frame = Math.min total_frames, Math.max 1, scroll_height / px_per_frame
-  #   image = "/resources/dom/#{Math.ceil frame}.jpg"
-  #   $('header img').attr 'src': image
-
   demo =
     start: (done)  ->
       $('body').addClass('demo_active').fadeOut ->
@@ -53,13 +45,13 @@ $ ->
       $("body").animate scrollTop: $(document).height(), 400, ->
         $pre.find('.token span').each (i) ->
           $(@).delay(i * rate).fadeIn 2, ->
-            # $cursor.insertAfter $(@)
             $("html, body").animate scrollTop: $(document).height(), 0
             if $pre.find('.token span').length - 1 is i
               $cursor.insertAfter $(@)
               lines = $pre.find('.token').length
               clearTimeout timeout
-              timeout = setTimeout done, section_timeout_delay + (cursor_delay_per_line * lines)
+              delay = section_timeout_delay + (cursor_delay_per_line * lines)
+              timeout = setTimeout done, delay
 
     showImages: (done) ->
       rate = 25
@@ -136,8 +128,6 @@ $ ->
         $('body').removeClass('demo_active')
         $('header').removeClass('repress_scroll')
         $('.recursive').removeClass('recursive')
-
-
 
   runDemo = ->
     demo.start ->

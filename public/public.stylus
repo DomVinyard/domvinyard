@@ -76,6 +76,7 @@ body
       display none
     pre
       display none
+      background none
     pre.scroll, pre.body
       margin-top 32px
 
