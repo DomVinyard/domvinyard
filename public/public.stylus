@@ -2,8 +2,8 @@
 body
   font-family "Gill Sans MT", "Gill Sans", "Gill Sans Std", Verdana, "Bitstream Vera Sans", sans-serif;
   width 360px
-  margin 0 auto
-  padding 32px
+  margin 32px auto 32px auto
+  // padding 32px
   &.demo_active
     pointer-events none !important
   h4
