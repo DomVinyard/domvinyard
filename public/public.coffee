@@ -18,7 +18,7 @@ $ ->
 
   lastFrame = 1
   setFrame = ->
-    scroll_height = $window.scrollTop()
+    scroll_height = document.body.scrollTop
     frame = Math.min total_frames, Math.max 1, scroll_height / px_per_frame
     return if lastFrame is frame
     return if !$header.is(':visible')
