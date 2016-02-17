@@ -35,9 +35,9 @@ body
     font-size 1em
     background #eee
     &:first-of-type
-      margin-top 74px
+      margin-top 54px
     &:last-of-type
-      margin-bottom 86px
+      margin-bottom 66px
       &.kill_margin
         margin-bottom 0px
     .recursive
