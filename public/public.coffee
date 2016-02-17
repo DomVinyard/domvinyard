@@ -1,7 +1,7 @@
 
 $ ->
   total_frames = 37
-  px_per_frame = 8.5
+  px_per_frame = 8
   section_timeout_delay = 300
 
   $header = $ 'header'
