@@ -4,6 +4,10 @@ $ ->
   px_per_frame = 9
   section_timeout_delay = 300
 
+  $header = $ 'header'
+  $window = $ window
+  $header_img = $header.find 'img'
+
   # Preload the images
   preload = (frame) ->
     if frame < total_frames
@@ -12,13 +16,25 @@ $ ->
       img.src = "/resources/dom/#{frame}.jpg"
   preload 1
 
-  $(window).scroll ->
-    return if !$('header').is(':visible')
-    return if $('header').hasClass('repress_scroll')
-    scroll_height = $(window).scrollTop()
+  lastFrame = 1
+  setFrame = ->
+    return if !$header.is(':visible')
+    return if $header.hasClass('repress_scroll')
+    scroll_height = $window.scrollTop()
     frame = Math.min total_frames, Math.max 1, scroll_height / px_per_frame
-    image = "/resources/dom/#{Math.ceil frame}.jpg"
-    $('header img').attr 'src': image
+    return if lastFrame is frame
+    lastFrame = frame
+    $header_img.attr 'src': "/resources/dom/#{Math.ceil frame}.jpg"
+
+  setInterval setFrame, 20
+
+  # $(window).scroll ->
+  #   return if !$('header').is(':visible')
+  #   return if $('header').hasClass('repress_scroll')
+  #   scroll_height = $(window).scrollTop()
+  #   frame = Math.min total_frames, Math.max 1, scroll_height / px_per_frame
+  #   image = "/resources/dom/#{Math.ceil frame}.jpg"
+  #   $('header img').attr 'src': image
 
   demo =
     start: (done)  ->
