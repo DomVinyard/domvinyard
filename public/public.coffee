@@ -18,19 +18,15 @@ $ ->
 
   lastFrame = 1
   setFrame = ->
-    return if !$header.is(':visible')
-    return if $header.hasClass('repress_scroll')
     scroll_height = $window.scrollTop()
     frame = Math.min total_frames, Math.max 1, scroll_height / px_per_frame
     return if lastFrame is frame
+    return if !$header.is(':visible')
+    return if $header.hasClass('repress_scroll')
     lastFrame = frame
     $header_img.attr 'src': "/resources/dom/#{Math.ceil frame}.jpg"
 
   setInterval setFrame, 32
-
-  $(window).on 'touchmove', (e) ->
-      # e.preventDefault()
-      setFrame()
 
   demo =
     start: (done)  ->
