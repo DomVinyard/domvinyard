@@ -1,0 +1,184 @@
+
+script(src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js")
+script(src="//use.edgefonts.net/passion-one.js")
+link(href="/resources/prism.css" rel="stylesheet")
+script(src="/resources/prism.js")
+script(src="/resources/jquery.lettering-0.6.1.min.js")
+script(src="public.coffee")
+
+meta(name="viewport" content="width=device-width, initial-scale=1")
+style #[include:stylus public.stylus]
+script #[include:coffee-script public.coffee]
+body
+  .images
+  header
+    img(src="/resources/dom/1.jpg")
+    h1 DOM VINYARD
+    h4 Designer, Developer
+  article
+    section
+      p I am a 30 year old English man. I studied Interface Design at UCA London. I have completed large projects for AXA and The NHS, and smaller projects for myself and others. I work in node.js wherever possible and in .NET wherever unavoidable.
+      p I'm currently the Technical Director of a financial services start-up with 4 full-time employees.
+      p I love designing and shipping things. If you have an interesting enough problem contact me using the first of the four links below and tell me about it, maybe I can help.
+      p.recursive And I have an unusual feeling that I've told you all of this before.
+  article.start
+    h4 WATCH ME CODE THIS SITE
+  footer
+    a(href="mailto:me@domvinyard.com")
+      img(src="resources/icons/mail.png")
+    a(href="https://twitter.com/_DomVinyard")
+      img(src="resources/icons/twitter.png")
+    a(href="https://medium.com/@DomVinyard")
+      img(src="resources/icons/medium.png")
+    a(href="https://github.com/domvinyard")
+      img(src="resources/icons/github.png")
+  .demo
+    pre.init
+      code(class="language-coffeescript")
+        |# HELLO WORLD
+        | 
+        |# fire up a node server
+        |express = require 'express'
+        |app = express()
+        |app.listen process.env.PORT or 9998
+        |app.use express.static 'public'
+        |app.set 'views', './public'
+        |app.set 'view engine', 'jade'
+        |app.get '/', (req, res) ->
+        |  res.render 'public'
+        | 
+      code(class="language-jade")
+        | 
+        |//- Client. Import jQuery
+        |script(src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js")
+        | 
+      code(class="language-coffeescript")
+        | 
+        |# Preload the images
+        |do preload = (frame = 1) ->
+        |   if frame < total_frames
+        |     img = new Image()
+        |     img.onload = -> preload frame + 1
+        |     img.src = "/resources/dom/#{frame}.jpg"
+    pre.header
+      code(class="language-jade")
+        |//- HEADER
+        | 
+        |//- Build template 
+        |header 
+        |  img(src="/resources/dom/1.jpg")
+        |  h1 DOM VINYARD
+        |  h4 Designer, Developer
+        | 
+      code(class="language-stylus")
+        | 
+        |// Apply styling
+        |header
+        |  margin 0 auto 68px auto
+        |  text-align right
+        |  img
+        |    width 360px
+        |    height 480px
+        |  h1
+        |    font-size 2.2em
+        |    margin 10px 0 2px 0
+        |    line-height: 0.5em
+        |  h4
+        |    letter-spacing 2px
+        |    margin 1px 0 0 0
+        |    font-size 1.1em
+        
+    pre.font
+      code(class="language-jade")
+        |//- CUSTOM FONT
+        | 
+        |//- Import
+        |script(src="//use.edgefonts.net/passion-one.js")
+        | 
+      code(class="language-stylus")
+        | 
+        |//- Apply styling
+        |h1
+        |  font-family passion-one
+        |h4
+        |  font-family "Gill Sans MT"
+        
+    pre.scroll
+      code(class="language-coffeescript")
+        |# IMAGE CHANGE ON SCROLL
+        |  
+        |# Set the framerate
+        |total_frames = 37
+        |px_per_frame = 9
+        | 
+        |# Look for scrolling
+        |$(window).scroll ->
+        |   scroll_height = $(window).scrollTop()
+        |   frame = scroll_height / px_per_frame
+        |  
+        |   # Every 9px down is a new frame
+        |   frame = Math.max 1, Math.ceil frame
+        |   frame = Math.min total_frames, frame
+        |   image = '/resources/dom/'+frame+'.jpg'
+        | 
+        |   # Set the image
+        |   $('header img').attr 'src': image 
+        
+    pre.body
+      code(class="language-jade")
+        |//- PAGE CONTENT
+        | 
+        |//- Main Text
+        |article
+        |  section <main_text>
+        | 
+        |//- Button to start demo
+        |article.start
+        |  h4 WATCH ME CODE THIS SITE
+        | 
+      code(class="language-stylus")
+        | 
+        |// Apply styling
+        |article
+        |   color #222
+        |   padding 16px 32px
+        |   margin 12px 0
+        |   background #eee
+        |.start
+        |   padding 16px 0
+        |   background #222
+        |   color white
+        |   font-weight bold
+        |   font-family: passion-one
+        |   text-align center
+        |   font-size 1.4em
+
+        
+    pre.demo_code
+      code(class="language-coffeescript")
+        |# MAKE THE BUTTON WORK
+        |# (getting a bit meta)
+        | 
+        |# User clicks the button
+        |$('.start').click runDemo
+      code(class="language-jade")
+        | 
+        |//- Prism makes code look pretty
+        |link(href="/resources/prism.css" rel="stylesheet")
+        |script(src="/resources/prism.js")
+      
+              
+    pre.footer
+      code(class="language-jade")
+        |//- BUILD THE FOOTER
+        | 
+        |//- Template
+        |footer
+        |  a(href="mailto:me@domvinyard.com")
+        |    img(src="resources/icons/mail.png")
+        |  a(href="https://twitter.com/_DomVinyard")
+        |    img(src="resources/icons/twitter.png")
+        |  a(href="https://medium.com/@DomVinyard")
+        |    img(src="resources/icons/medium.png")
+        |  a(href="https://github.com/domvinyard")
+        |    img(src="resources/icons/github.png")

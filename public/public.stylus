@@ -1,0 +1,101 @@
+
+body
+  font-family "Gill Sans MT", "Gill Sans", "Gill Sans Std", Verdana, "Bitstream Vera Sans", sans-serif;
+  width 360px
+  margin 0 auto
+  padding 32px
+  &.demo_active
+    pointer-events none !important
+  h4
+    letter-spacing 2px
+    margin 1px 0 0 0
+    font-weight normal
+    font-size 1.1em
+  a:link
+    color #acacac
+    text-decoration none
+  header
+    margin 0 auto 0 auto
+    text-align right
+    &.nofont
+      h1, h4
+        font-family serif !important
+    img
+      width 360px
+      height 480px
+    h1
+      font-family passion-one, sans-serif
+      font-size 2.2em
+      margin 10px 0 2px 0
+      line-height: 0.5em
+  article
+    color #222
+    padding 16px 32px
+    margin 12px 0
+    font-size 1em
+    background #eee
+    &:first-of-type
+      margin-top 74px
+    &:last-of-type
+      margin-bottom 86px
+      &.kill_margin
+        margin-bottom 0px
+    .recursive
+      display none
+  .start
+    padding 16px 0
+    background #222
+    color white
+    cursor pointer
+    font-weight bold
+    font-family: passion-one, sans-serif;
+    text-align center
+    font-size 1.4em
+    &.disabled
+      background #747474
+      pointer-events none
+  footer
+    width 360px
+    text-align center
+    margin 0
+    img
+      margin 0 -4px
+  .images
+    img
+      display inline-block
+      height 60px
+      margin 3px
+    :first-child
+      z-index 2
+  .demo
+    display none
+    code, pre
+      word-wrap break-word
+      font-size 0.9em
+    .prism-show-language
+      display none
+    pre
+      display none
+    pre.scroll, pre.body
+      margin-top 32px
+
+
+
+.blinking-cursor {
+  color: #2e3d48;
+  font-size: 1.6em;
+  line-height 1em
+  margin-left: -2px;
+  vertical-align: bottom;
+  display: inline-block;
+  animation: 1.5s blink step-end infinite;
+}
+
+@keyframes blink {
+  from, to {
+    opacity: 0;
+  }
+  50% {
+    opacity: 1;
+  }
+}
