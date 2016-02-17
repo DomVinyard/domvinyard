@@ -1,7 +1,7 @@
 
 $ ->
   total_frames = 37
-  px_per_frame = 9
+  px_per_frame = 8.5
   section_timeout_delay = 300
 
   $header = $ 'header'
@@ -30,6 +30,7 @@ $ ->
 
   demo =
     start: (done)  ->
+      disableScroll()
       $('body').addClass('demo_active').fadeOut ->
         $(@).children().hide().parent().show()
         $('.demo, .images').fadeIn done
@@ -119,12 +120,13 @@ $ ->
     buildFooter: (done) ->
       rate = 200
       $('footer img').each (i) ->
-        $(@).delay(600 + i * rate).animate {opacity: 1, margin: '0 -4px'}, 600
-      $('pre.footer').slideUp 800, ->
+        $(@).delay(i * rate).animate {opacity: 1, margin: '0 -4px'}, 600
+      $('pre.footer').delay(1200).slideUp 800, ->
         setTimeout done, section_timeout_delay + 600
 
     finished: ->
       $("html, body").delay(200).animate { scrollTop: 0 }, 1000, ->
+        enableScroll()
         $('body').removeClass('demo_active')
         $('header').removeClass('repress_scroll')
         $('.recursive').removeClass('recursive')
