@@ -23,8 +23,10 @@ $ ->
     return if lastFrame is frame
     return if !$header.is(':visible')
     return if $header.hasClass('repress_scroll')
+    frame = Math.ceil frame
     lastFrame = frame
-    $header_img.attr 'src': "/resources/dom/#{Math.ceil frame}.jpg"
+    # $header.css marginTop: frame * 5
+    $header_img.attr 'src': "/resources/dom/#{frame}.jpg"
 
   setInterval setFrame, 50
 
@@ -54,77 +56,86 @@ $ ->
               delay = section_timeout_delay + (cursor_delay_per_line * lines)
               timeout = setTimeout done, delay
 
-    showImages: (done) ->
-      rate = 25
-      frame_selection = total_frames - 2
-      for frame in [1..frame_selection]
-        image = "/resources/dom/#{frame}.jpg"
-        $image = $('<img>').attr 'src': image, frame: frame
-        $('.images').prepend($image)
-        $image.hide().delay((frame_selection - frame) * rate).fadeIn ->
-          if parseInt($(@).attr('frame')) is frame_selection
-            $('pre.init').slideUp ->
+    showImages: ($pre, done) ->
+      @.writeCode $pre, ->
+        $("body").animate {scrollTop: 0}, 200, ->
+          rate = 25
+          frame_selection = total_frames - 2
+          for frame in [1..frame_selection]
+            $("body").animate {scrollTop: 0}, 0
+            image = "/resources/dom/#{frame}.jpg"
+            $image = $('<img>').attr 'src': image, frame: frame
+            $('.images').prepend($image)
+            $image.hide().delay((frame_selection - frame) * rate).fadeIn ->
+              if parseInt($(@).attr('frame')) is frame_selection
+                $('pre.init').slideUp ->
+                  setTimeout done, section_timeout_delay
+
+    buildHeader: ($pre, done) ->
+      @.writeCode $pre, ->
+        $('pre.header').slideUp()
+        $('header h1, header h4').hide()
+        $('header img').attr 'src': "/resources/dom/1.jpg"
+        $('header').addClass 'nofont'
+        $('header').addClass 'repress_scroll'
+        $('header').show()
+        $('header img').hide()
+        $('header h1, header h4').fadeIn 1000
+        $('.images img').each ->
+          rate = 20
+          frame = $(@).attr('frame')
+          if frame > 1
+            $(@).delay(frame * rate).animate marginLeft: -48, ->
+              if parseInt(frame) is total_frames - 2
+                $('.images img').css(marginLeft: 0).not(':last').remove()
+                $('.images img').animate height: 480, ->
+                  $('header img').show()
+                  $('.images').empty()
+                  $("html, body").animate scrollTop: $(document).height(), 400
+                  setTimeout done, section_timeout_delay
+
+    attachFont: ($pre, done) ->
+      @.writeCode $pre, ->
+        $('header').removeClass 'nofont'
+        $('pre.font').slideUp ->
+          setTimeout done, section_timeout_delay
+
+    removeScrollLock: ($pre, done) ->
+      @.writeCode $pre, ->
+        $("body").animate {scrollTop: 0}, 200, ->
+          $('header').removeClass 'repress_scroll'
+          $("body").animate { scrollTop: 60 }, 1800, ->
+            $('header img').attr 'src': "/resources/dom/1.jpg"
+            $('header').addClass 'repress_scroll'
+            $("body").animate {scrollTop: 0}, 200, ->
+              $('pre.scroll').hide()
               setTimeout done, section_timeout_delay
 
-    buildHeader: (done) ->
-      $('pre.header').slideUp()
-      $('header h1, header h4').hide()
-      $('header img').attr 'src': "/resources/dom/1.jpg"
-      $('header').addClass 'nofont'
-      $('header').addClass 'repress_scroll'
-      $('header').show()
-      $('header img').hide()
-      $('header h1, header h4').fadeIn 1000
-      $('.images img').each ->
-        rate = 20
-        frame = $(@).attr('frame')
-        if frame > 1
-          $(@).delay(frame * rate).animate marginLeft: -48, ->
-            if parseInt(frame) is total_frames - 2
-              $('.images img').css(marginLeft: 0).not(':last').remove()
-              $('.images img').animate height: 480, ->
-                $('header img').show()
-                $('.images').empty()
-                $("html, body").animate scrollTop: $(document).height(), 400
-                setTimeout done, section_timeout_delay
+    showBody: ($pre, done) ->
+      @.writeCode $pre, ->
+        $('article').slideDown 400
+        $('pre.body').delay(800).slideUp 400
+        $('.start').addClass('disabled')
+        $('article').addClass('kill_margin')
+        setTimeout done, 1200 + section_timeout_delay
 
-    attachFont: (done) ->
-      $('header').removeClass 'nofont'
-      $('pre.font').slideUp ->
-        setTimeout done, section_timeout_delay
+    activateButton: ($pre, done) ->
+      @.writeCode $pre, ->
+        $('pre.demo_code').slideUp ->
+          $('article').removeClass('kill_margin')
+          $('.start').removeClass 'disabled'
+          $('footer').show().find('img').css opacity: 0, margin: '0 8px'
+          setTimeout done, section_timeout_delay
 
-    removeScrollLock: (done) ->
-      $("body").animate {scrollTop: 0}, 200, ->
-        $('header').removeClass 'repress_scroll'
-        $("body").animate { scrollTop: 60 }, 1800, ->
-          $('header img').attr 'src': "/resources/dom/1.jpg"
-          $('header').addClass 'repress_scroll'
-          $("body").animate {scrollTop: 0}, 200, ->
-            $('pre.scroll').hide()
-            setTimeout done, section_timeout_delay
+    buildFooter: ($pre, done) ->
+      @.writeCode $pre, ->
+        rate = 200
+        $('footer img').each (i) ->
+          $(@).delay(i * rate).animate {opacity: 1, margin: '0 -4px'}, 600
+        $('pre.footer').delay(1200).slideUp 800, ->
+          setTimeout done, section_timeout_delay + 200
 
-    showBody: (done) ->
-      $('article').slideDown 400
-      $('pre.body').delay(800).slideUp 400
-      $('.start').addClass('disabled')
-      $('article').addClass('kill_margin')
-      setTimeout done, 1200 + section_timeout_delay
-
-    activateButton: (done) ->
-      $('pre.demo_code').slideUp ->
-        $('article').removeClass('kill_margin')
-        $('.start').removeClass 'disabled'
-        $('footer').show().find('img').css opacity: 0, margin: '0 8px'
-        setTimeout done, section_timeout_delay
-
-    buildFooter: (done) ->
-      rate = 200
-      $('footer img').each (i) ->
-        $(@).delay(i * rate).animate {opacity: 1, margin: '0 -4px'}, 600
-      $('pre.footer').delay(1200).slideUp 800, ->
-        setTimeout done, section_timeout_delay + 200
-
-    finished: ->
+    end: ->
       $("html, body").delay(200).animate { scrollTop: 0 }, 1000, ->
         enableScroll()
         $('body').removeClass('demo_active')
@@ -133,20 +144,13 @@ $ ->
 
   runDemo = ->
     demo.start ->
-      demo.writeCode $('pre.init'), ->
-        demo.showImages ->
-          demo.writeCode $('pre.header'), ->
-            demo.buildHeader ->
-              demo.writeCode $('pre.font'), ->
-                demo.attachFont ->
-                  demo.writeCode $('pre.scroll'), ->
-                    demo.removeScrollLock ->
-                      demo.writeCode $('pre.body'), ->
-                        demo.showBody ->
-                          demo.writeCode $('pre.demo_code'), ->
-                            demo.activateButton ->
-                              demo.writeCode $('pre.footer'), ->
-                                demo.buildFooter ->
-                                  demo.finished()
+      demo.showImages $('pre.init'), ->
+        demo.buildHeader $('pre.header'), ->
+          demo.attachFont $('pre.font'), ->
+            demo.removeScrollLock $('pre.scroll'), ->
+              demo.showBody $('pre.body'), ->
+                demo.activateButton $('pre.demo_code'), ->
+                  demo.buildFooter $('pre.footer'), ->
+                    demo.end()
 
   $('.start').click runDemo
