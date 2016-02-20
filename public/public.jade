@@ -29,8 +29,6 @@ body
       img(src="resources/icons/mail.png")
     a(href="https://twitter.com/_DomVinyard")
       img(src="resources/icons/twitter.png")
-    a(href="https://medium.com/@DomVinyard")
-      img(src="resources/icons/medium.png")
     a(href="https://github.com/domvinyard")
       img(src="resources/icons/github.png")
   .demo
@@ -161,7 +159,16 @@ body
         |# (getting a bit meta)
         | 
         |# User clicks the button
-        |$('.start').click runDemo
+        |$('.start').click ->
+        |  demo.start ->
+        |    demo.images $('pre.init'), ->
+        |      demo.header $('pre.header'), ->
+        |        demo.font $('pre.font'), ->
+        |          demo.animation $('pre.scroll'), ->
+        |            demo.body $('pre.body'), ->
+        |              demo.button $('pre.demo_code'), ->
+        |                demo.footer $('pre.footer'), ->
+        |                  demo.end()
       code(class="language-jade")
         | 
         |//- Prism makes code look pretty
@@ -179,7 +186,5 @@ body
         |    img(src="resources/icons/mail.png")
         |  a(href="https://twitter.com/_DomVinyard")
         |    img(src="resources/icons/twitter.png")
-        |  a(href="https://medium.com/@DomVinyard")
-        |    img(src="resources/icons/medium.png")
         |  a(href="https://github.com/domvinyard")
         |    img(src="resources/icons/github.png")
