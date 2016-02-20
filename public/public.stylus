@@ -58,6 +58,7 @@ body
     width 360px
     text-align center
     margin 0
+    margin-bottom 64px
     img
       margin 0 -4px
   .images

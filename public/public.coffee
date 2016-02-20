@@ -70,16 +70,17 @@ $ ->
     # Show all of the images splayed out into a grid.
 
     images: ($pre, done) ->
-      @.writeCode $pre, ->
+      @code $pre, ->
         $("body").animate {scrollTop: 0}, 200, ->
           rate = 25
           frame_selection = total_frames - 2
-          for frame in [1..frame_selection]
+          for current_frame in [1..frame_selection]
             $("body").animate {scrollTop: 0}, 0
-            image = "/resources/dom/#{frame}.jpg"
-            $image = $('<img>').attr 'src': image, frame: frame
-            $('.images').prepend($image)
-            $image.hide().delay((frame_selection - frame) * rate).fadeIn ->
+            image = "/resources/dom/#{current_frame}.jpg"
+            $image = $('<img>').attr 'src': image, frame: current_frame
+            $('.images').prepend $image
+            delay = (frame_selection - current_frame) * rate
+            $image.hide().delay(delay).fadeIn ->
               if parseInt($(@).attr('frame')) is frame_selection
                 $('pre.init').slideUp ->
                   setTimeout done, section_timeout_delay
@@ -87,17 +88,17 @@ $ ->
     # Show the title, stack up the images and make the starting image grow to the correct size.
 
     header: ($pre, done) ->
-      @.writeCode $pre, ->
+      @code $pre, ->
         $pre.slideUp()
         $('header h1, header h4').hide().fadeIn 1000
         $('header img').attr(src: "/resources/dom/1.jpg").hide()
-        $('header').addClass('nofont repress_scroll').show()
+        $('header').addClass('nofont').addClass('repress_scroll').show()
         $('.images img').each ->
           rate = 20
-          frame = $(@).attr('frame')
+          current_frame = $(@).attr('frame')
           if frame > 1
-            $(@).delay(frame * rate).animate marginLeft: -48, ->
-              if parseInt(frame) is total_frames - 2
+            $(@).delay(current_frame * rate).animate marginLeft: -48, ->
+              if parseInt(current_frame) is total_frames - 2
                 $('.images img').css(marginLeft: 0).not(':last').remove()
                 $('.images img').animate height: 480, ->
                   $('header img').show()
@@ -108,7 +109,7 @@ $ ->
     # Add the custom font
 
     font: ($pre, done) ->
-      @.writeCode $pre, ->
+      @code $pre, ->
         $('header').removeClass 'nofont'
         $('pre.font').slideUp ->
           setTimeout done, section_timeout_delay
@@ -116,7 +117,7 @@ $ ->
     # Demo the scrolling
 
     animation: ($pre, done) ->
-      @.writeCode $pre, ->
+      @code $pre, ->
         $("body").animate {scrollTop: 0}, 200, ->
           $('header').removeClass 'repress_scroll'
           $("body").animate { scrollTop: 60 }, 1800, ->
@@ -129,7 +130,7 @@ $ ->
     # Show the main body text of the page
 
     body: ($pre, done) ->
-      @.writeCode $pre, ->
+      @code $pre, ->
         $('article').addClass('kill_margin').slideDown 400
         $('pre.body').delay(800).slideUp 400
         $('.start').addClass('disabled')
@@ -138,7 +139,7 @@ $ ->
     # Activate the button
 
     button: ($pre, done) ->
-      @.writeCode $pre, ->
+      @code $pre, ->
         $('pre.demo_code').slideUp ->
           $('article').removeClass('kill_margin')
           $('.start').removeClass 'disabled'
@@ -148,7 +149,7 @@ $ ->
     # Show the footer
 
     footer: ($pre, done) ->
-      @.writeCode $pre, ->
+      @code $pre, ->
         rate = 200
         $('footer img').each (i) ->
           $(@).delay(i * rate).animate {opacity: 1, margin: '0 -4px'}, 600
