@@ -1,15 +1,18 @@
 
-script(src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js")
-script(src="//use.edgefonts.net/passion-one.js")
-link(href="/resources/prism.css" rel="stylesheet")
-script(src="/resources/prism.js")
-script(src="/resources/scrollControl.js")
-script(src="/resources/jquery.lettering-0.6.1.min.js")
-script(src="public.coffee")
+head
+  script(src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js")
+  script(src="//use.edgefonts.net/passion-one.js")
+  link(href="/resources/prism.css" rel="stylesheet")
+  script(src="/resources/prism.js")
+  script(src="/resources/scrollControl.js")
+  script(src="/resources/jquery.lettering-0.6.1.min.js")
+  script(src="public.coffee")
 
-meta(name="viewport" content="width=device-width, user-scalable=no")
-style #[include:stylus public.stylus]
-script #[include:coffee-script public.coffee]
+  meta(name="viewport" content="width=device-width, user-scalable=no")
+  style #[include:stylus public.stylus]
+  script #[include:coffee-script public.coffee]
+  title Dom Vinyard
+  
 body
   .images
   header
