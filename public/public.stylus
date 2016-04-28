@@ -10,7 +10,7 @@ body
     letter-spacing 2px
     margin 1px 0 0 0
     font-weight normal
-    font-size 1.1em
+    font-size 1.15em
   a:link
     color #acacac
     text-decoration none
@@ -33,7 +33,7 @@ body
     color #333
     padding 16px 32px
     margin 12px 0
-    font-size 1.2em
+    font-size 1.1em
     background #eee
     &:first-of-type
       margin-top 48px
