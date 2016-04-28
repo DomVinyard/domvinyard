@@ -1,41 +1,28 @@
 
 $ ->
 
-  # Make sure the fps is not too high, browsers will not keep up
-
   total_frames = 37
   px_per_frame = 8
-  fps = 20 #fps
   section_timeout_delay = 300
 
   # Define some elements
 
   $header = $ 'header'
   $window = $ window
-  $header_img = $header.find 'img'
-
-  # Preload the images
-
-  preload = (frame) ->
-    if frame < total_frames
-      img = new Image()
-      img.onload = -> preload frame + 1
-      img.src = "/resources/dom/#{frame}.jpg"
-  preload 1
 
   # Set the image animation logic
 
-  frame = 1
+  frame = 0
   setFrame = ->
+    if $header.hasClass('repress_scroll')
+      return $('.image').css 'background-position-y': 0
     scroll_height = document.body.scrollTop
-    new_frame = Math.min total_frames, Math.max 1, scroll_height / px_per_frame
+    new_frame = Math.min total_frames - 1, Math.max 0, scroll_height / px_per_frame
     return if new_frame is frame
-    return if !$header.is(':visible') or $header.hasClass('repress_scroll')
-    frame = Math.ceil new_frame
-    $header_img.attr 'src': "/resources/dom/#{frame}.jpg"
-  setInterval setFrame, 1000 / fps
-
-
+    return if !$header.is(':visible')
+    frame = Math.ceil(new_frame)
+    $('.image').css 'background-position-y': "-#{frame*480}px"
+  $(window).scroll setFrame
 
   # Define the demo. Start by hiding everything, show the demo code container and the images container.
 
@@ -49,7 +36,7 @@ $ ->
     # Animate code being written. Accepts a code block. Uses the lettering library to break the code into induvidual letters.
 
     code: ($pre, done) ->
-      rate = 5
+      rate = 3
       cursor_delay_per_line = 5
       timeout = no
       $('blinking-cursor').remove()
@@ -91,7 +78,7 @@ $ ->
       @code $pre, ->
         $pre.slideUp()
         $('header h1, header h4').hide().fadeIn 1000
-        $('header img').attr(src: "/resources/dom/1.jpg").hide()
+        $('header .image').hide()
         $('header').addClass('nofont').addClass('repress_scroll').show()
         $('.images img').each ->
           rate = 20
@@ -101,7 +88,7 @@ $ ->
               if parseInt(current_frame) is total_frames - 2
                 $('.images img').css(marginLeft: 0).not(':last').remove()
                 $('.images img').animate height: 480, ->
-                  $('header img').show()
+                  $('header .image').show()
                   $('.images').empty()
                   $("html, body").animate scrollTop: $(document).height(), 400
                   setTimeout done, section_timeout_delay
@@ -121,7 +108,7 @@ $ ->
         $("body").animate {scrollTop: 0}, 200, ->
           $('header').removeClass 'repress_scroll'
           $("body").animate { scrollTop: 60 }, 1800, ->
-            $('header img').attr 'src': "/resources/dom/1.jpg"
+            # $('header img').attr 'src': "/resources/dom/1.jpg"
             $('header').addClass 'repress_scroll'
             $("body").animate {scrollTop: 0}, 200, ->
               $('pre.scroll').hide()
