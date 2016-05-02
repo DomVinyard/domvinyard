@@ -21,10 +21,24 @@ body
     h4 Designer, Developer
   article
     section
-      p I am a 30 year old English man. I have a degree in Interface Design from UCA London. I have completed large projects for AXA and the NHS and smaller projects for myself and others. I work in node.js wherever possible and in .NET wherever unavoidable.
-      p I have spent the last four years as head of development for a financial services start-up where I directed the build of several large commercial applications.
-      p I love designing and launching things and I'm a strong proponent of minimalist design, both visually and functionally.
+      p Hi, I'm Dom. I build stuff in node.js. I'm a proponent of minimalist design.
+      p
+        a(href='http://driver.plus' target='_blank') driver.plus
+        a  helps identify fraud
+      p 
+        a(href='http://zerotoeleven.com' target='_blank') zero-eleven
+        a  is a new way to weather
+      p
+        a(href='http://skimd.it' target='_blank') skimd.it
+        a  is an Watch reddit client
+      p
+        a(href='http://noBillionair.es' target='_blank') no Billionaires
+        a  is a thought experiment
+      p
+        a(href='http://outside.lol' target='_blank') outside.lol
+        a  is a weather robot
       p.recursive And I have an uneasy feeling that I've told you all of this before.
+      p 
   article.start
     h4 WATCH ME CODE THIS SITE
   footer
@@ -38,28 +52,27 @@ body
         |# HELLO WORLD
         | 
         |# fire up a node server
-        |express = require 'express'
-        |app = express()
-        |app.listen process.env.PORT or 9998
-        |app.use express.static 'public'
-        |app.set 'views', './public'
-        |app.set 'view engine', 'jade'
+        |app = require('express')()
+        |app.listen(process.env.PORT)
+        |app.use(express.static 'public')
+        |app.set('views', './public')
+        |app.set('view engine', 'jade')
         |app.get '/', (req, res) ->
-        |  res.render 'public'
-        | 
-      code(class="language-jade")
-        | 
-        |//- Client. Import jQuery
-        |script(src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js")
-        | 
-      code(class="language-coffeescript")
+        |  res.render('public')
         | 
         |# Preload the images
         |do preload = (frame = 1) ->
         |   if frame < total_frames
         |     img = new Image()
-        |     img.onload = -> preload frame + 1
         |     img.src = "/resources/dom/#{frame}.jpg"
+        |     img.onload = ->
+        |       preload frame + 1
+      code(class="language-jade")
+        |  
+        |  
+        |//- Client. Import jQuery
+        |script(src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js")
+        | 
     pre.header
       code(class="language-jade")
         |//- HEADER
@@ -172,6 +185,7 @@ body
         |                  demo.end()
       code(class="language-jade")
         | 
+        |  
         |//- Prism makes code look pretty
         |link(href="/resources/prism.css" rel="stylesheet")
         |script(src="/resources/prism.js")

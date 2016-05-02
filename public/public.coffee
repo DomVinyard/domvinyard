@@ -105,14 +105,16 @@ $ ->
 
     animation: ($pre, done) ->
       @code $pre, ->
-        $("body").animate {scrollTop: 0}, 200, ->
+        $("body").animate {scrollTop: 30}, 400, ->
           $('header').removeClass 'repress_scroll'
-          $("body").animate { scrollTop: 60 }, 1800, ->
+          $("body").animate { scrollTop: 60 }, 400, ->
             # $('header img').attr 'src': "/resources/dom/1.jpg"
-            $('header').addClass 'repress_scroll'
-            $("body").animate {scrollTop: 0}, 200, ->
-              $('pre.scroll').hide()
-              setTimeout done, section_timeout_delay
+            $("body").animate {scrollTop: 30}, 400, ->
+              $("body").animate {scrollTop: 60}, 400, ->
+                $("body").animate {scrollTop: 30}, 400, ->
+                  $('header').addClass 'repress_scroll'
+                  $('pre.scroll').hide()
+                  setTimeout done, section_timeout_delay
 
     # Show the main body text of the page
 
