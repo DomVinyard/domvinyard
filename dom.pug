@@ -1,0 +1,454 @@
+
+//- The whole website is presented as a single pug file. 400 or so lines.
+
+head
+  title Dom
+
+  //- Using jQuery, a custom font and a few display libraries for doing the 'watch me code this site' stuff.
+
+  script(src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js")
+  script(src="//use.edgefonts.net/passion-one.js")
+  link(href="prism.css" rel="stylesheet")
+  script(src="prism.js")
+  script(src="lettering.js")
+  script(src="scrollControl.js")
+
+  meta(name="viewport" content="width=device-width, user-scalable=no")
+  script 
+    :coffee-script
+      $ ->
+        total_frames = 37
+        px_per_frame = 8
+        section_timeout_delay = 300
+
+        # Set the image animation logic
+
+        frame = 0
+        setFrame = ->
+          if ($ 'header').hasClass('repress_scroll')
+            return $('.image').css 'background-position-y': 0
+          scroll_height = document.body.scrollTop
+          new_frame = Math.min total_frames - 1, Math.max 0, scroll_height / px_per_frame
+          return if new_frame is frame
+          return if !($ 'header').is(':visible')
+          frame = Math.ceil(new_frame)
+          $('.image').css 'background-position-y': "-#{frame*480}px"
+        $(window).scroll setFrame
+
+        # Define the demo. Start by hiding everything, show the demo code container and the images container.
+
+        demo =
+          start: (done)  ->
+            disableScroll()
+            $('body').addClass('demo_active').fadeOut ->
+              $(@).children().hide().parent().show()
+              $('.demo, .images').fadeIn done
+
+          # Animate code being written. Accepts a code block. Uses the lettering library to break the code into induvidual letters.
+
+          code: ($pre, done) ->
+            rate = 1
+            cursor_delay_per_line = 3
+            timeout = no
+            $('blinking-cursor').remove()
+            $cursor = $('<span>').addClass('blinking-cursor').text '|'
+            $pre.fadeIn()
+            $pre.find('.token').lettering().find('span').hide()
+            $("body").animate scrollTop: $(document).height(), 400, ->
+              $pre.find('.token span').each (i) ->
+                $(@).delay(i * rate).fadeIn 1, ->
+                  $("html, body").animate scrollTop: $(document).height(), 0
+                  if $pre.find('.token span').length - 1 is i
+                    $cursor.insertAfter $(@)
+                    lines = $pre.find('.token').length
+                    clearTimeout timeout
+                    delay = section_timeout_delay + (cursor_delay_per_line * lines)
+                    timeout = setTimeout done, delay
+
+          # Show all of the images splayed out into a grid.
+
+          images: ($pre, done) ->
+            @code $pre, ->
+              $("body").animate {scrollTop: 0}, 200, ->
+                rate = 25
+                frame_selection = total_frames - 2
+                for current_frame in [1..frame_selection]
+                  $("body").animate {scrollTop: 0}, 0
+                  image = "dom/#{current_frame}.jpg"
+                  $image = $('<img>').attr 'src': image, frame: current_frame
+                  $('.images').prepend $image
+                  delay = (frame_selection - current_frame) * rate
+                  $image.hide().delay(delay).fadeIn ->
+                    if parseInt($(@).attr('frame')) is frame_selection
+                      $('pre.init').slideUp ->
+                        setTimeout done, section_timeout_delay
+
+          # Show the title, stack up the images and make the starting image grow to the correct size.
+
+          header: ($pre, done) ->
+            @code $pre, ->
+              $pre.slideUp()
+              $('header h1, header h4').hide().fadeIn 1000
+              $('header .image').hide()
+              $('header').addClass('nofont').addClass('repress_scroll').show()
+              $('.images img').each ->
+                rate = 20
+                current_frame = $(@).attr('frame')
+                if frame > 1
+                  $(@).delay(current_frame * rate).animate marginLeft: -48, ->
+                    if parseInt(current_frame) is total_frames - 2
+                      $('.images img').css(marginLeft: 0).not(':last').remove()
+                      $('.images img').animate height: 480, ->
+                        $('header .image').show()
+                        $('.images').empty()
+                        $("html, body").animate scrollTop: $(document).height(), 400
+                        setTimeout done, section_timeout_delay
+
+          # Add the custom font
+
+          font: ($pre, done) ->
+            @code $pre, ->
+              $('header').removeClass 'nofont'
+              $('pre.font').slideUp ->
+                setTimeout done, section_timeout_delay
+
+          # Demo the scrolling
+
+          animation: ($pre, done) ->
+            @code $pre, ->
+              $("body").animate {scrollTop: 30}, 400, ->
+                $('header').removeClass 'repress_scroll'
+                $("body").animate { scrollTop: 60 }, 400, ->
+                  $("body").animate {scrollTop: 30}, 400, ->
+                    $("body").animate {scrollTop: 60}, 400, ->
+                      $('header').addClass 'repress_scroll'
+                      $('pre.scroll').hide()
+                      setTimeout done, section_timeout_delay
+
+          # Show the main body text of the page
+
+          body: ($pre, done) ->
+            @code $pre, ->
+              $('article').addClass('kill_margin').slideDown 400
+              $('pre.body').delay(800).slideUp 400
+              $('.start').addClass('disabled')
+              setTimeout done, 1200 + section_timeout_delay
+
+          # Reset the button
+
+          button: ($pre, done) ->
+            $('footer').show().find('img').css opacity: 0, margin: '0 -4px'
+            @code $pre, ->
+              $('.start').removeClass('kill_margin').slideDown()
+              $('pre.demo_code').slideUp ->
+                $('.start').removeClass 'disabled'
+                setTimeout done, section_timeout_delay
+
+          # Show the footer
+
+          footer: ($pre, done) ->
+            @code $pre, ->
+              rate = 200
+              $('footer img').each (i) ->
+                $(@).delay(i * rate).animate {opacity: 1}, 600
+              $('pre.footer').delay(1200).slideUp 800, done
+
+          # Scroll the page to the top and reset everything
+
+          end: ->
+            $("html, body").delay(200).animate { scrollTop: 0 }, 1000, ->
+              enableScroll()
+              $('body').removeClass 'demo_active'
+              $('header').removeClass 'repress_scroll'
+              $('.recursive').removeClass 'recursive'
+
+        # Bind this to the button click
+
+        $('.start').click ->
+          demo.start ->
+            demo.images $('pre.init'), ->
+              demo.header $('pre.header'), ->
+                demo.font $('pre.font'), ->
+                  demo.animation $('pre.scroll'), ->
+                    demo.body $('pre.body'), ->
+                      demo.button $('pre.demo_code'), ->
+                        demo.footer $('pre.footer'), ->
+                          demo.end()
+  
+  //- Stylus for the CSS logic. 
+
+  style
+    :stylus
+      body
+        font-family "Gill Sans MT", "Gill Sans", "Gill Sans Std", Verdana, sans-serif;
+        width 360px
+        margin 8px auto 8px auto
+        &.demo_active
+          pointer-events none !important
+        h4
+          letter-spacing 2px
+          margin 1px 0 0 0
+          font-weight normal
+          font-size 1.15em
+        .jobtitle
+          font-size: 1.3em;
+          text-transform: uppercase
+          margin 6 0 0 0
+        a:link, a:any-link
+          color red !important
+          text-decoration none
+        header
+          margin 16px auto 0 auto
+          text-align right
+          &.nofont
+            h1, h4
+              font-family serif !important
+          .image
+            height 480px
+            background url('dom/full.jpg')
+          h1
+            font-family passion-one, sans-serif
+            font-size 2.2em
+            margin 16px 0 3px 0
+            line-height: 0.5em
+        article
+          color #4a4a4a
+          padding: 32px 62px 42px 62px;
+          margin-bottom: 18px;
+          background #efefef
+          font-size 1.2em
+          line-height: 1.5em
+          &:first-of-type
+            margin-top: 48px;
+          .recursive
+            display none
+        .start
+          padding 16 32
+          background #222
+          color white
+          cursor pointer
+          font-weight bold
+          font-family: passion-one, sans-serif;
+          text-align center
+          vertical-align: top;
+          display inline-block 
+          font-size 1.4em
+          border-radius: 8px
+          margin-bottom: 16px;
+          &.kill_margin
+            margin-bottom 0px
+          &.disabled
+            background #747474
+            pointer-events none
+        footer
+          display inline-block
+          text-align center
+          margin 0
+          margin-bottom 64px
+          margin-right: 11px;
+          width: 104px;
+          img
+            margin 0 -4px
+        .images
+          img
+            display inline-block
+            height 60px
+            margin 3px
+          :first-child
+            z-index 2
+        .demo
+          display none
+          code, pre
+            word-wrap break-word
+            font-size 0.9em
+          .prism-show-language
+            display none
+          pre
+            display none
+            background none
+          pre.scroll, pre.body
+            margin-top 32px
+      .blinking-cursor
+        color: #2e3d48;
+        font-size: 1.6em;
+        line-height 1em
+        margin-left: -2px;
+        vertical-align: bottom;
+        display: inline-block;
+        animation: 1.5s blink step-end infinite;
+      @keyframes blink {
+        from, to { opacity: 0; }
+        50% { opacity: 1; }
+      }
+
+//- The actual page layout
+  
+body
+  .images
+  header
+    .image
+    h1 DOM VINYARD
+    h4.jobtitle Designer & Developer
+  article
+    section
+      p I ❤ attractive, opinionated information design.
+      p I've designed cool stuff for the NHS, AXA Insurance, and Oxford Nanopore. 💻🔥
+  footer
+    a(href="mailto:domvinyard@me.com"): img(src="icons/mail.png")
+    a(href="https://github.com/DomVinyard")
+      img(src="icons/github.png")
+  .start
+    h4 WATCH ME CODE
+
+  //- Watch me code this site
+
+  .demo
+    pre.init
+      code(class="language-coffeescript")
+        |# HELLO WORLD
+        | 
+        |# fire up a node server
+        |app = require('express')()
+        |app.listen(process.env.PORT)
+        |app.use(express.static 'public')
+        |app.set('views', './public')
+        |app.set('view engine', 'pug')
+        |app.get '/', (req, res) ->
+        |  res.render('public')
+        | 
+        |# Preload the images
+        |do preload = (frame = 1) ->
+        |   if frame < total_frames
+        |     img = new Image()
+        |     img.src = "/dom/#{frame}.jpg"
+        |     img.onload = ->
+        |       preload frame + 1
+      code(class="language-jade")
+        |  
+        |  
+        |//- Client. Import jQuery
+        |script(src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.0/jquery.min.js")
+        | 
+
+    pre.header
+      code(class="language-jade")
+        |//- HEADER (NAME AND JOB)
+        | 
+        |//- Build template 
+        |header 
+        |  img(src="/dom/1.jpg")
+        |  h1 DOM VINYARD
+        |  h4 Designer & Developer
+        | 
+      code(class="language-stylus")
+        | 
+        |// Apply styling 
+        |header
+        |  margin 0 auto 68px auto
+        |  text-align right
+        |  img
+        |    height 480px
+        |  h1
+        |    font-size 2.2em
+        |    margin 10px 0 2px 0
+        |    line-height: 0.5em
+        |  h4
+        |    letter-spacing 2px
+        |    margin 6px 0 0 0
+        |    font-size 1.1em
+        
+    pre.font
+      code(class="language-jade")
+        |//- CUSTOM FONT
+        | 
+        |//- Import
+        |script(src="//use.edgefonts.net/passion-one.js")
+        | 
+      code(class="language-stylus")
+        | 
+        |//- Apply styling
+        |h1
+        |  font-family passion-one
+        |h4
+        |  font-family "Gill Sans MT"
+        
+    pre.scroll: code(class="language-coffeescript")
+      |# IMAGE CHANGE ON SCROLL (FRIENDLY)
+      |  
+      |# Set the framerate
+      |total_frames = 37
+      |px_per_frame = 9
+      | 
+      |# Look for scrolling
+      |$(window).scroll ->
+      |   scroll_height = $(window).scrollTop()
+      |   frame = scroll_height / px_per_frame
+      |  
+      |   # Every 9px down is a new frame
+      |   frame = Math.max 1, Math.ceil frame
+      |   frame = Math.min total_frames, frame
+      |   image = '/dom/'+frame+'.jpg'
+      | 
+      |   # Set the image
+      |   $('header img').attr 'src': image 
+        
+    pre.body
+      code(class="language-jade")
+        |//- PAGE CONTENT (CASUAL)
+        | 
+        |//- Main Text
+        |article
+        |  section <main_text>
+        | 
+        |//- Button to start demo
+        |.start
+        |  h4 WATCH ME CODE THIS SITE
+        | 
+      code(class="language-stylus")
+        | 
+        |// Apply styling
+        |article
+        |   color #222
+        |   padding 16px 32px
+        |   margin 12px 0
+        |   background #eee
+        |.start
+        |   padding 16px 0
+        |   background #222
+        |   color white
+        |   font-weight bold
+        |   font-family: passion-one
+        |   text-align center
+        |   font-size 1.4em
+
+    pre.demo_code
+      code(class="language-coffeescript")
+        |# RESET THE BUTTON (META)
+        | 
+        |# User clicks the button
+        |$('.start').click ->
+        |  demo.start ->
+        |    demo.images $('.init'), ->
+        |      demo.header $('.header'), ->
+        |        demo.font $('.font'), ->
+        |          demo.animation $('.scroll'), ->
+        |            demo.body $('.body'), ->
+        |              demo.button $('.code'), ->
+        |                demo.footer $('.foot'), ->
+        |                  demo.end()
+      code(class="language-jade")
+        | 
+        |  
+        |//- Prism makes code look pretty
+        |link(href="/prism.css" rel="stylesheet")
+        |script(src="/prism.js")
+      
+    pre.footer: code(class="language-jade")
+      |//- CONTACT
+      | 
+      |//- Template
+      |footer
+      |  a(href="mailto:domvinyard@me.com")
+      |    img(src="icons/mail.png")
+      |  a(href="https://twitter.com/_DomVinyard")
+      |    img(target="_blank" src="icons/twitter.png")
