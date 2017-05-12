@@ -2,7 +2,7 @@
 //- The whole website is presented as a single pug file. 400 or so lines.
 
 head
-  title Dom
+  title dom.fyi
 
   //- Using jQuery, a custom font and a few display libraries for doing the 'watch me code this site' stuff.
 
@@ -234,7 +234,6 @@ head
           display inline-block 
           font-size 1.4em
           border-radius: 8px
-          margin-bottom: 16px;
           &.kill_margin
             margin-bottom 0px
           &.disabled
@@ -244,7 +243,6 @@ head
           display inline-block
           text-align center
           margin 0
-          margin-bottom 64px
           margin-right: 11px;
           width: 104px;
           img
@@ -309,20 +307,17 @@ body
         | 
         |# fire up a node server
         |app = require('express')()
-        |app.listen(process.env.PORT)
-        |app.use(express.static 'public')
-        |app.set('views', './public')
-        |app.set('view engine', 'pug')
-        |app.get '/', (req, res) ->
-        |  res.render('public')
+        |app.listen process.env.PORT
+        |app.use express.static 'resources'
+        |app.set 'view engine', 'pug'
+        |app.get '/', (req, res) -> res.render 'dom'
         | 
         |# Preload the images
         |do preload = (frame = 1) ->
         |   if frame < total_frames
         |     img = new Image()
         |     img.src = "/dom/#{frame}.jpg"
-        |     img.onload = ->
-        |       preload frame + 1
+        |     img.onload = -> preload frame + 1
       code(class="language-jade")
         |  
         |  
